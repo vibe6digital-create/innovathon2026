@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — INNOVATHON 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{
+  --bg:#08080f;--s1:#111119;--s2:#18181f;--border:rgba(255,255,255,.08);
+  --fire:#e85d2f;--teal:#0d9488;--gold:#d4a017;--green:#10b981;--red:#ef4444;--blue:#3b82f6;
+  --paper:#f5f3ee;--muted:rgba(245,243,238,.38);--text:rgba(245,243,238,.9);
+  --mono:'DM Mono',monospace;--display:'Syne',sans-serif;--body:'Instrument Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:14px;min-height:100vh}
+
+/* login */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(232,93,47,.08),transparent 70%)}
+.lbox{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:36px 32px;width:100%;max-width:380px;text-align:center}
+.llogo{font-family:var(--display);font-size:22px;font-weight:800;color:var(--paper);margin-bottom:4px}
+.llogo span{color:var(--fire)}
+.lsub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:24px}
+.pin{width:100%;background:var(--s2);border:1.5px solid var(--border);border-radius:10px;color:var(--paper);font-family:var(--mono);font-size:22px;text-align:center;letter-spacing:8px;padding:13px;outline:none;-webkit-text-security:disc}
+.pin:focus{border-color:var(--fire)}
+.pbtn{width:100%;margin-top:12px;padding:12px;background:var(--fire);color:#fff;border:none;border-radius:10px;font-family:var(--display);font-size:14px;font-weight:700;cursor:pointer}
+.pbtn:hover{background:#c94d22}
+.perr{font-family:var(--mono);font-size:11px;color:#fca5a5;margin-top:8px;min-height:16px}
+.phint{font-family:var(--mono);font-size:10px;color:rgba(245,243,238,.18);margin-top:14px}
+
+/* dashboard */
+#dash{display:none}
+.topbar{background:var(--s1);border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.brand{font-family:var(--display);font-size:16px;font-weight:800;color:var(--paper)}
+.brand span{color:var(--fire)}
+.topright{display:flex;align-items:center;gap:10px}
+.rpill{background:rgba(232,93,47,.15);border:1px solid rgba(232,93,47,.3);border-radius:20px;padding:3px 11px;font-family:var(--mono);font-size:11px;color:#f4a07a}
+.lout{background:none;border:1px solid var(--border);border-radius:7px;padding:5px 10px;color:var(--muted);font-family:var(--mono);font-size:11px;cursor:pointer}
+.lout:hover{color:var(--paper)}
+
+.tabs{background:var(--s1);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:11px 18px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--body);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--fire);border-bottom-color:var(--fire)}
+
+.page{display:none;padding:22px 18px;max-width:1300px;margin:0 auto}
+.page.active{display:block}
+
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.pt{font-family:var(--display);font-size:clamp(20px,4vw,28px);font-weight:800;letter-spacing:-.5px}
+.ps{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
+
+/* stat row */
+.srow{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:16px}
+.sbox{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.sbox .n{font-family:var(--mono);font-size:26px;font-weight:500;color:var(--paper);display:block}
+.sbox .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:2px;display:block}
+
+/* toolbar */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.sw{position:relative}
+.sw::before{content:'⌕';position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none}
+.srch{background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--paper);font-family:var(--body);font-size:12px;padding:8px 12px 8px 30px;outline:none;max-width:220px;width:100%}
+.srch:focus{border-color:var(--fire)}
+.asel{background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--paper);font-family:var(--body);font-size:12px;padding:8px 11px;outline:none;min-width:130px}
+.asel option{background:#16161f}
+
+/* table */
+.ac{background:var(--s1);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:9px 11px;text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--s2)}
+td{padding:9px 11px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.02)}
+tr:last-child td{border-bottom:none}
+.tname{font-weight:600;color:var(--paper);font-size:13px}
+.tid{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:1px}
+
+/* status buttons */
+.status-btns{display:flex;gap:6px;align-items:center}
+.sbtn{padding:4px 10px;border-radius:6px;border:1px solid var(--border);font-family:var(--mono);font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.04);color:var(--muted)}
+.sbtn:hover{border-color:rgba(255,255,255,.25);color:var(--paper)}
+.sbtn.sl.active{background:rgba(16,185,129,.18);border-color:#10b981;color:#6ee7b7}
+.sbtn.el.active{background:rgba(239,68,68,.18);border-color:#ef4444;color:#fca5a5}
+.sbtn.pe.active{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:var(--paper)}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;font-family:var(--mono);white-space:nowrap}
+.b-green{background:rgba(16,185,129,.18);color:#6ee7b7;border:1px solid rgba(16,185,129,.3)}
+.b-red{background:rgba(239,68,68,.18);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.b-gray{background:rgba(255,255,255,.06);color:rgba(245,243,238,.4);border:1px solid rgba(255,255,255,.1)}
+.b-gold{background:rgba(212,160,23,.18);color:#fcd34d;border:1px solid rgba(212,160,23,.3)}
+.b-teal{background:rgba(13,148,136,.18);color:#5eead4;border:1px solid rgba(13,148,136,.3)}
+.b-blue{background:rgba(59,130,246,.18);color:#93c5fd;border:1px solid rgba(59,130,246,.3)}
+.cht{display:inline-block;font-size:9px;font-weight:700;font-family:var(--mono);padding:2px 6px;border-radius:4px}
+.ch1{background:rgba(232,93,47,.18);color:#f4a07a}
+.ch2{background:rgba(13,148,136,.18);color:#5eead4}
+.ch3{background:rgba(212,160,23,.18);color:#fcd34d}
+.ch4{background:rgba(37,99,235,.18);color:#93c5fd}
+.ch5{background:rgba(16,185,129,.18);color:#6ee7b7}
+
+/* score ring */
+.sr{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:500;flex-shrink:0}
+.sr-hi{background:rgba(16,185,129,.1);border:2px solid #10b981;color:#6ee7b7}
+.sr-md{background:rgba(212,160,23,.1);border:2px solid #d4a017;color:#fcd34d}
+.sr-lo{background:rgba(239,68,68,.1);border:2px solid #ef4444;color:#fca5a5}
+
+/* progress */
+.pb{height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+.pbf{height:100%;border-radius:2px;transition:width .5s}
+.pb-wrap{margin-bottom:10px}
+.pb-row{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px;font-family:var(--mono)}
+
+/* btn */
+.btn{padding:7px 13px;border-radius:7px;border:none;font-family:var(--body);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-fire{background:var(--fire);color:#fff}.btn-fire:hover{background:#c94d22}
+.btn-teal{background:var(--teal);color:#fff}.btn-teal:hover{background:#0f766e}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{border-color:rgba(255,255,255,.2);color:var(--paper)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#059669}
+.btn-sm{padding:5px 9px;font-size:11px}
+
+/* shortlist progress bar at top */
+.sl-progress{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.sl-count{font-family:var(--mono);font-size:28px;font-weight:500;color:var(--green)}
+.sl-of{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.sl-bar-wrap{flex:1;min-width:160px}
+.sl-bar{height:8px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden}
+.sl-bar-fill{height:100%;border-radius:4px;background:var(--green);transition:width .4s}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:#14141c;border:1px solid rgba(255,255,255,.1);border-radius:16px;width:100%;max-width:560px;padding:26px;margin:auto}
+.mhdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.mttl{font-family:var(--display);font-size:19px;font-weight:700;color:var(--paper)}
+.msub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
+.x{width:28px;height:28px;background:rgba(255,255,255,.07);border:none;border-radius:6px;color:var(--muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.x:hover{color:var(--paper)}
+.drow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+.drow:last-child{border:none}
+.dk{color:var(--muted)}.dv{color:var(--paper);font-weight:500;text-align:right;word-break:break-all;max-width:260px}
+.dv a{color:#93c5fd;text-decoration:none}.dv a:hover{text-decoration:underline}
+
+.ai-panel{background:rgba(13,148,136,.06);border:1px solid rgba(13,148,136,.18);border-radius:10px;padding:14px;margin-top:14px}
+.ai-hdr{font-size:10px;font-weight:600;color:#5eead4;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.crit{display:flex;justify-content:space-between;align-items:center;padding:6px 9px;background:rgba(255,255,255,.025);border-radius:5px;margin-bottom:4px;font-size:11px}
+.crit:last-child{margin:0}
+
+/* sliders for manual eval */
+.slrow{margin-bottom:10px}
+.slhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.slname{font-size:12px;font-weight:600;color:rgba(245,243,238,.8)}
+.slval{font-family:var(--mono);font-size:13px;font-weight:500;color:#5eead4}
+.slmax{font-size:10px;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--teal)}
+.total-d{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;margin:12px 0}
+.total-d .tn{font-family:var(--mono);font-size:36px;font-weight:500}
+.total-d .tl{font-size:10px;color:var(--muted);margin-top:2px}
+textarea.nta{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--paper);font-family:var(--body);font-size:12px;padding:9px 12px;min-height:65px;resize:vertical;outline:none}
+.nta:focus{border-color:var(--fire)}
+.flabel{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;display:block}
+
+/* threshold */
+.thresh-ctrl{background:rgba(212,160,23,.07);border:1px solid rgba(212,160,23,.2);border-radius:10px;padding:12px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tlabel{font-size:11px;color:var(--muted);min-width:80px}
+input[type=range].tslider{flex:1;min-width:100px;accent-color:var(--gold)}
+.tval{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--gold);min-width:40px}
+.tcnt{font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+.analyzing{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:#5eead4}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(13,148,136,.3);border-top-color:#0d9488;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--green);color:var(--paper);padding:9px 17px;border-radius:8px;font-size:12px;font-weight:500;z-index:9999;transition:transform .3s;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+.medal{font-size:16px;min-width:22px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lbox">
+    <div class="llogo">INNOVA<span>THON</span> 2026</div>
+    <div class="lsub">Admin Portal</div>
+    <input class="pin" id="pin" type="password" maxlength="4" inputmode="numeric" placeholder="••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="pbtn" onclick="doLogin()">Sign In →</button>
+    <div class="perr" id="perr"></div>
+    <div class="phint">Admin PIN: 0000</div>
+    <a href="/" style="display:block;margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none">← Home</a>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dash">
+  <div class="topbar">
+    <div class="brand">INNOVA<span>THON</span> 2026</div>
+    <div class="topright">
+      <div class="rpill">Admin</div>
+      <button class="lout" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('r1',this)">🎯 Round 1 — Shortlist</button>
+    <button class="tab" onclick="showTab('r2',this)">⚡ Round 2 — AI Scores</button>
+    <button class="tab" onclick="showTab('leaderboard',this)">🏆 Leaderboard</button>
+    <button class="tab" onclick="showTab('overview',this)">📊 Overview</button>
+  </div>
+
+  <!-- ROUND 1 -->
+  <div class="page active" id="pg-r1">
+    <div class="ph">
+      <div>
+        <div class="pt">Round 1 — Shortlisting</div>
+        <div class="ps">Mark teams as Shortlisted or Eliminated. Target: ~38 teams.</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-teal" onclick="distributeTeams()">⚡ Distribute to Volunteers</button>
+        <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ Refresh</button>
+      </div>
+    </div>
+
+    <div class="sl-progress" id="sl-progress-bar">
+      <div>
+        <div class="sl-count" id="sl-count">0</div>
+        <div class="sl-of" id="sl-of">of 77 shortlisted</div>
+      </div>
+      <div class="sl-bar-wrap">
+        <div class="pb-row"><span>Shortlisted</span><span id="sl-pct">0%</span></div>
+        <div class="sl-bar"><div class="sl-bar-fill" id="sl-bar-fill" style="width:0%"></div></div>
+      </div>
+      <div style="display:flex;gap:8px;font-family:var(--mono);font-size:11px">
+        <span style="color:#fca5a5" id="sl-elim-count">0 eliminated</span>
+        <span style="color:var(--muted)" id="sl-pend-count">0 pending</span>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="sw"><input class="srch" id="r1-search" placeholder="Search team or campus…" oninput="renderR1()"></div>
+      <select class="asel" id="r1-track" onchange="renderR1()">
+        <option value="">All Tracks</option>
+        <option value="Web, App & Platform Development">Web/App</option>
+        <option value="Artificial Intelligence & Data Intelligence">AI/Data</option>
+        <option value="Cybersecurity & System Reliability">Cybersecurity</option>
+        <option value="Internet of Things (IoT) & Smart Systems">IoT</option>
+        <option value="Open Innovation">Open Innovation</option>
+      </select>
+      <select class="asel" id="r1-status" onchange="renderR1()">
+        <option value="">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="shortlisted">Shortlisted</option>
+        <option value="eliminated">Eliminated</option>
+      </select>
+      <button class="btn btn-ghost btn-sm" onclick="bulkShortlist('shortlisted')">✓ Shortlist All Filtered</button>
+      <button class="btn btn-ghost btn-sm" onclick="bulkShortlist('eliminated')">✗ Eliminate All Filtered</button>
+    </div>
+
+    <div class="ac">
+      <div class="tw">
+        <table>
+          <thead><tr><th>#</th><th>Team</th><th>Campus</th><th>Members</th><th>Track</th><th style="text-align:center">Decision</th></tr></thead>
+          <tbody id="r1-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUND 2 -->
+  <div class="page" id="pg-r2">
+    <div class="ph">
+      <div><div class="pt">Round 2 — AI Evaluation</div><div class="ps">Shortlisted teams · GitHub submitted · Claude AI scoring</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ Refresh</button>
+    </div>
+    <div class="srow" id="r2-stats"></div>
+    <div class="toolbar">
+      <div class="sw"><input class="srch" id="r2-search" placeholder="Search team…" oninput="renderR2()"></div>
+      <select class="asel" id="r2-status" onchange="renderR2()">
+        <option value="">All</option>
+        <option value="submitted">Submitted</option>
+        <option value="not_submitted">Not submitted yet</option>
+        <option value="ai_done">AI scored</option>
+      </select>
+      <select class="asel" id="r2-vol" onchange="renderR2()">
+        <option value="">All Volunteers</option>
+        <option value="vol1">Volunteer 1</option>
+        <option value="vol2">Volunteer 2</option>
+        <option value="vol3">Volunteer 3</option>
+        <option value="vol4">Volunteer 4</option>
+        <option value="vol5">Volunteer 5</option>
+      </select>
+    </div>
+    <div class="ac" style="padding:0">
+      <div class="tw"><table>
+        <thead><tr><th>Team</th><th>Track</th><th>Volunteer</th><th>GitHub</th><th>AI Score</th><th>Manual</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="r2-tbody"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="page" id="pg-leaderboard">
+    <div class="ph">
+      <div><div class="pt">Leaderboard</div><div class="ps">Shortlisted teams ranked by final score</div></div>
+      <div style="display:flex;gap:8px">
+        <div class="thresh-ctrl" style="margin:0">
+          <span class="tlabel">Threshold</span>
+          <input type="range" class="tslider" id="t-slider" min="0" max="100" value="50" oninput="updateThresh()">
+          <span class="tval" id="t-val">50</span>
+        </div>
+      </div>
+    </div>
+    <div class="ac" style="padding:0">
+      <div class="tw"><table>
+        <thead><tr><th>Rank</th><th>Team</th><th>Track</th><th>AI Score</th><th>Manual</th><th>Final</th><th>Threshold</th></tr></thead>
+        <tbody id="lb-tbody"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="page" id="pg-overview">
+    <div class="ph"><div><div class="pt">Overview</div><div class="ps">Full hackathon stats</div></div></div>
+    <div class="srow" id="ov-stats"></div>
+    <div class="g2">
+      <div class="ac" style="padding:16px"><div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">By Track</div><div id="ov-track"></div></div>
+      <div class="ac" style="padding:16px"><div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Volunteer Load</div><div id="ov-vol"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="m-detail">
+  <div class="modal">
+    <div class="mhdr">
+      <div><div class="mttl" id="md-title"></div><div class="msub" id="md-sub"></div></div>
+      <button class="x" onclick="closeM('m-detail')">✕</button>
+    </div>
+    <div id="md-body"></div>
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+      <button class="btn btn-fire btn-sm" onclick="openEval(currentDetailId)">✏️ Manual Score</button>
+      <button class="btn btn-ghost btn-sm" onclick="reeval(currentDetailId)">↻ Re-run AI</button>
+    </div>
+  </div>
+</div>
+
+<!-- EVAL MODAL -->
+<div class="overlay" id="m-eval">
+  <div class="modal">
+    <div class="mhdr">
+      <div><div class="mttl" id="me-title"></div><div class="msub" id="me-sub"></div></div>
+      <button class="x" onclick="closeM('m-eval')">✕</button>
+    </div>
+    <div id="me-ai"></div>
+    <div id="me-sliders"></div>
+    <div class="total-d"><div class="tl" style="margin-bottom:3px">MANUAL TOTAL</div><div class="tn" id="me-total">0</div><div class="tl">/100</div></div>
+    <label class="flabel">Notes</label>
+    <textarea class="nta" id="me-notes" placeholder="Observations, feedback…"></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn btn-ghost" onclick="closeM('m-eval')">Cancel</button>
+      <button class="btn btn-fire" onclick="saveEval()">💾 Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const VNAMES = {vol1:'Vol 1',vol2:'Vol 2',vol3:'Vol 3',vol4:'Vol 4',vol5:'Vol 5'};
+const CH_MAP = {
+  1:{name:'Zero-Touch Growth OS',criteria:[{name:'Innovation & Uniqueness',max:20},{name:'Technical Execution',max:25},{name:'User Experience',max:20},{name:'Business Intelligence',max:15},{name:'Completeness',max:10},{name:'Presentation & Communication',max:10}]},
+  2:{name:'Crypto Sentiment Terminal',criteria:[{name:'Technical Complexity',max:30},{name:'Accuracy & Performance',max:25},{name:'Integration & Completeness',max:20},{name:'Code Quality & Documentation',max:15},{name:'Presentation & Explanation',max:10}]},
+  3:{name:'Micro Equity Tokenisation',criteria:[{name:'Smart Contract Quality',max:30},{name:'Technical Completeness',max:25},{name:'Innovation & India Context',max:20},{name:'UX & Accessibility',max:15},{name:'Presentation & Vision',max:10}]},
+  4:{name:'AI PoisonGuard',criteria:[{name:'Detection Engine Quality',max:30},{name:'Technical Implementation',max:25},{name:'Innovation & Uniqueness',max:20},{name:'Dashboard UX',max:15},{name:'Presentation & Demo',max:10}]},
+  5:{name:'BioShield IoT',criteria:[{name:'Cancellable Template Implementation',max:30},{name:'Technical Implementation',max:25},{name:'Innovation & IoT Context',max:20},{name:'Dashboard & Visualisation',max:15},{name:'Presentation & Security Awareness',max:10}]},
+};
+
+let allTeams = [], stats = {}, thresh = 50, evalTarget = null, currentDetailId = null;
+
+// ── Auth ──────────────────────────────────────────────────────
+async function doLogin() {
+  const pin = document.getElementById('pin').value.trim();
+  document.getElementById('perr').textContent = '';
+  const r = await fetch('/api/auth', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin})});
+  const d = await r.json();
+  if (!d.ok || d.role !== 'admin') { document.getElementById('perr').textContent = 'Invalid PIN or not admin.'; return; }
+  sessionStorage.setItem('ih26_admin','1');
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('dash').style.display   = 'block';
+  refreshAll();
+  setInterval(()=>{ if(allTeams.some(t=>t.aiStatus==='analyzing'))refreshAll(); }, 4000);
+}
+function logout() { sessionStorage.removeItem('ih26_admin'); location.reload(); }
+if (sessionStorage.getItem('ih26_admin')) { document.getElementById('login').style.display='none'; document.getElementById('dash').style.display='block'; refreshAll(); setInterval(()=>{if(allTeams.some(t=>t.aiStatus==='analyzing'))refreshAll();},4000); }
+
+// ── Data ──────────────────────────────────────────────────────
+async function refreshAll() {
+  const [tr, sr] = await Promise.all([
+    fetch('/api/teams?role=admin').then(r=>r.json()),
+    fetch('/api/stats?role=admin').then(r=>r.json()),
+  ]);
+  allTeams = tr.teams || [];
+  stats    = sr;
+  thresh   = sr.threshold || 50;
+  document.getElementById('t-slider').value = thresh;
+  document.getElementById('t-val').textContent = thresh;
+  const ap = document.querySelector('.page.active');
+  if (ap?.id==='pg-r1')          renderR1();
+  if (ap?.id==='pg-r2')          { renderR2(); renderR2Stats(); }
+  if (ap?.id==='pg-leaderboard') renderLB();
+  if (ap?.id==='pg-overview')    renderOV();
+  updateSLBar();
+}
+
+function showTab(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  el.classList.add('active');
+  refreshAll();
+}
+
+// ── Shortlist bar ─────────────────────────────────────────────
+function updateSLBar() {
+  const sl   = allTeams.filter(t=>t.round1==='shortlisted').length;
+  const el   = allTeams.filter(t=>t.round1==='eliminated').length;
+  const pend = allTeams.filter(t=>t.round1==='pending').length;
+  const total= allTeams.length;
+  const pct  = total ? Math.round(sl/total*100) : 0;
+  document.getElementById('sl-count').textContent = sl;
+  document.getElementById('sl-of').textContent    = `of ${total} shortlisted`;
+  document.getElementById('sl-pct').textContent   = pct+'%';
+  document.getElementById('sl-bar-fill').style.width = pct+'%';
+  document.getElementById('sl-elim-count').textContent = el+' eliminated';
+  document.getElementById('sl-pend-count').textContent = pend+' pending';
+}
+
+// ── Round 1 ───────────────────────────────────────────────────
+function renderR1() {
+  const q  = document.getElementById('r1-search')?.value.toLowerCase()||'';
+  const tr = document.getElementById('r1-track')?.value||'';
+  const st = document.getElementById('r1-status')?.value||'';
+  let teams = allTeams.filter(t=>{
+    if (q && !t.teamName.toLowerCase().includes(q) && !t.campus.toLowerCase().includes(q) && !t.id.toLowerCase().includes(q)) return false;
+    if (tr && t.track !== tr) return false;
+    if (st && t.round1 !== st) return false;
+    return true;
+  });
+  const tb = document.getElementById('r1-tbody');
+  if (!teams.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">No teams found</td></tr>'; return; }
+  tb.innerHTML = teams.map((t,i)=>`<tr id="row-${t.id}">
+    <td style="font-family:var(--mono);font-size:10px;color:var(--muted)">${t.id}</td>
+    <td><div class="tname">${t.teamName}</div><div class="tid">${t.members.length} members</div></td>
+    <td style="font-size:11px;color:var(--muted)">${t.campus}</td>
+    <td style="font-size:11px;color:var(--muted);max-width:160px">${t.members.slice(0,3).join(', ')}${t.members.length>3?'…':''}</td>
+    <td><span class="cht ch${t.challenge}">${shortTrack(t.track)}</span></td>
+    <td>
+      <div class="status-btns">
+        <button class="sbtn sl ${t.round1==='shortlisted'?'active':''}" onclick="setStatus('${t.id}','shortlisted')">✓ Shortlist</button>
+        <button class="sbtn el ${t.round1==='eliminated'?'active':''}" onclick="setStatus('${t.id}','eliminated')">✗ Eliminate</button>
+        <button class="sbtn pe ${t.round1==='pending'?'active':''}" onclick="setStatus('${t.id}','pending')">— Pending</button>
+      </div>
+    </td>
+  </tr>`).join('');
+}
+
+function shortTrack(t) {
+  if (t.includes('Web')) return 'Web/App';
+  if (t.includes('Artificial')) return 'AI/Data';
+  if (t.includes('Cyber')) return 'Cybersec';
+  if (t.includes('IoT')) return 'IoT';
+  return 'Open';
+}
+
+async function setStatus(id, status) {
+  // Optimistic UI
+  const t = allTeams.find(x=>x.id===id);
+  if (t) t.round1 = status;
+  updateSLBar();
+  // Update button active states
+  const row = document.getElementById('row-'+id);
+  if (row) {
+    row.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));
+    const map = {shortlisted:'sl',eliminated:'el',pending:'pe'};
+    row.querySelector('.'+map[status])?.classList.add('active');
+  }
+  await fetch(`/api/teams/${id}/round1`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
+}
+
+function getFilteredIds() {
+  const q  = document.getElementById('r1-search')?.value.toLowerCase()||'';
+  const tr = document.getElementById('r1-track')?.value||'';
+  const st = document.getElementById('r1-status')?.value||'';
+  return allTeams.filter(t=>{
+    if (q && !t.teamName.toLowerCase().includes(q) && !t.campus.toLowerCase().includes(q)) return false;
+    if (tr && t.track !== tr) return false;
+    if (st && t.round1 !== st) return false;
+    return true;
+  }).map(t=>t.id);
+}
+
+async function bulkShortlist(status) {
+  const ids = getFilteredIds();
+  if (!ids.length) return;
+  const label = status==='shortlisted' ? 'shortlist' : 'eliminate';
+  if (!confirm(`${label} ${ids.length} teams?`)) return;
+  await fetch('/api/round1/bulk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({updates:ids.map(id=>({id,status}))})});
+  await refreshAll();
+  toast(`✓ ${ids.length} teams ${label}d`);
+}
+
+async function distributeTeams() {
+  const sl = allTeams.filter(t=>t.round1==='shortlisted').length;
+  if (!sl) { toast('No shortlisted teams yet!'); return; }
+  if (!confirm(`Distribute ${sl} shortlisted teams evenly across 5 volunteers?`)) return;
+  const r = await fetch('/api/distribute',{method:'POST'});
+  const d = await r.json();
+  await refreshAll();
+  toast(`✓ ${d.distributed} teams distributed across 5 volunteers`);
+}
+
+// ── Round 2 ───────────────────────────────────────────────────
+function renderR2Stats() {
+  const sl = allTeams.filter(t=>t.round1==='shortlisted');
+  const submitted  = sl.filter(t=>t.submittedAt).length;
+  const aiDone     = sl.filter(t=>t.aiStatus==='done').length;
+  const analyzing  = sl.filter(t=>t.aiStatus==='analyzing').length;
+  const scores     = sl.filter(t=>t.aiTotal!==null).map(t=>t.aiTotal);
+  const avg        = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+  document.getElementById('r2-stats').innerHTML=`
+    <div class="sbox"><span class="n">${sl.length}</span><span class="l">Shortlisted</span></div>
+    <div class="sbox"><span class="n">${submitted}</span><span class="l">Submitted</span></div>
+    <div class="sbox"><span class="n">${aiDone}</span><span class="l">AI Scored</span></div>
+    <div class="sbox"><span class="n">${analyzing}</span><span class="l">Analyzing</span></div>
+    <div class="sbox"><span class="n" style="color:${sc(avg)}">${avg??'—'}</span><span class="l">Avg Score</span></div>`;
+}
+
+function renderR2() {
+  renderR2Stats();
+  const q  = document.getElementById('r2-search')?.value.toLowerCase()||'';
+  const st = document.getElementById('r2-status')?.value||'';
+  const vf = document.getElementById('r2-vol')?.value||'';
+  let teams = allTeams.filter(t=>t.round1==='shortlisted').filter(t=>{
+    if (q && !t.teamName.toLowerCase().includes(q)) return false;
+    if (vf && t.volunteerId !== vf) return false;
+    if (st==='submitted'    && !t.submittedAt) return false;
+    if (st==='not_submitted'&& t.submittedAt) return false;
+    if (st==='ai_done'      && t.aiStatus!=='done') return false;
+    return true;
+  });
+  const tb = document.getElementById('r2-tbody');
+  if (!teams.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">No teams match</td></tr>';return;}
+  tb.innerHTML = teams.map(t=>`<tr>
+    <td><div class="tname">${t.teamName}</div><div class="tid">${t.id}</div></td>
+    <td><span class="cht ch${t.challenge}">${shortTrack(t.track)}</span></td>
+    <td style="font-size:11px;color:var(--muted)">${VNAMES[t.volunteerId]||'—'}</td>
+    <td>${t.github?`<a href="${t.github}" target="_blank" style="color:#93c5fd;font-family:var(--mono);font-size:10px">🔗 Repo</a>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>
+    <td>${t.aiStatus==='analyzing'?'<div class="analyzing"><span class="spin"></span>Analyzing…</div>':t.aiTotal!==null?`<div class="sr ${srC(t.aiTotal)}" style="margin:0">${t.aiTotal}</div>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>
+    <td>${t.manualEval?`<b style="font-family:var(--mono);color:#6ee7b7">${t.manualEval.total}</b>`:'<span style="color:var(--muted)">—</span>'}</td>
+    <td>${t.submittedAt?'<span class="badge b-teal">✓ Submitted</span>':'<span class="badge b-gray">Awaiting</span>'}</td>
+    <td style="display:flex;gap:5px">
+      <button class="btn btn-ghost btn-sm" onclick="openDetail('${t.id}')">View</button>
+      <button class="btn btn-fire btn-sm" onclick="openEval('${t.id}')">Score</button>
+    </td>
+  </tr>`).join('');
+}
+
+// ── Leaderboard ───────────────────────────────────────────────
+function renderLB() {
+  const gScore = t => t.manualEval?.total ?? t.aiTotal;
+  const teams  = allTeams.filter(t=>t.round1==='shortlisted'&&(t.aiTotal!==null||t.manualEval))
+    .sort((a,b)=>gScore(b)-gScore(a));
+  const tb = document.getElementById('lb-tbody');
+  if (!teams.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted)">No scored teams yet</td></tr>';return;}
+  tb.innerHTML = teams.map((t,i)=>{
+    const score=gScore(t);
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+    return `<tr>
+      <td><span class="medal">${medal}</span></td>
+      <td><div class="tname">${t.teamName}</div><div class="tid">${t.id} · ${t.campus}</div></td>
+      <td><span class="cht ch${t.challenge}">${shortTrack(t.track)}</span></td>
+      <td>${t.aiTotal??'—'}</td>
+      <td>${t.manualEval?`<b style="color:#6ee7b7">${t.manualEval.total}</b>`:'—'}</td>
+      <td><b style="font-family:var(--mono);font-size:16px;color:${sc(score)}">${score}</b></td>
+      <td><span class="badge ${score>=thresh?'b-green':'b-red'}">${score>=thresh?'✓ Pass':'✗ Fail'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function updateThresh() {
+  thresh = parseFloat(document.getElementById('t-slider').value);
+  document.getElementById('t-val').textContent = thresh;
+  renderLB();
+  fetch('/api/threshold',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({value:thresh})});
+}
+
+// ── Overview ──────────────────────────────────────────────────
+function renderOV() {
+  const s = stats;
+  document.getElementById('ov-stats').innerHTML=`
+    <div class="sbox"><span class="n">${s.total||0}</span><span class="l">Total Teams</span></div>
+    <div class="sbox"><span class="n" style="color:#6ee7b7">${s.shortlisted||0}</span><span class="l">Shortlisted</span></div>
+    <div class="sbox"><span class="n" style="color:#fca5a5">${s.eliminated||0}</span><span class="l">Eliminated</span></div>
+    <div class="sbox"><span class="n" style="color:var(--muted)">${s.pending||0}</span><span class="l">Pending</span></div>
+    <div class="sbox"><span class="n">${s.r2submitted||0}</span><span class="l">R2 Submitted</span></div>
+    <div class="sbox"><span class="n" style="color:${sc(s.avgAI)}">${s.avgAI??'—'}</span><span class="l">Avg AI Score</span></div>`;
+
+  const byT = (s.byTrack||[]);
+  document.getElementById('ov-track').innerHTML = byT.map(t=>{
+    const p = t.total?Math.round(t.shortlisted/t.total*100):0;
+    return `<div class="pb-wrap">
+      <div class="pb-row"><span style="font-size:10px">${t.track.split('&')[0].trim().substring(0,22)}</span><span>${t.shortlisted}/${t.total}</span></div>
+      <div class="pb"><div class="pbf" style="width:${p}%;background:${sc(p)}"></div></div>
+    </div>`;
+  }).join('');
+
+  const byV = (s.byVol||[]);
+  document.getElementById('ov-vol').innerHTML = byV.map(v=>{
+    const p = v.assigned?Math.round(v.manual/v.assigned*100):0;
+    return `<div class="pb-wrap">
+      <div class="pb-row"><span>${v.name}</span><span>${v.manual}/${v.assigned} manual</span></div>
+      <div class="pb"><div class="pbf" style="width:${p}%;background:${sc(p)}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── Detail modal ──────────────────────────────────────────────
+function openDetail(id) {
+  const t = allTeams.find(x=>x.id===id); if(!t) return;
+  currentDetailId = id;
+  const ch = CH_MAP[t.challenge];
+  document.getElementById('md-title').textContent = t.teamName;
+  document.getElementById('md-sub').textContent   = `${t.id} · ${t.campus} · ${VNAMES[t.volunteerId]||'Unassigned'}`;
+  let html=`
+    <div class="drow"><span class="dk">Team ID</span><span class="dv">${t.id}</span></div>
+    <div class="drow"><span class="dk">Campus</span><span class="dv">${t.campus}</span></div>
+    <div class="drow"><span class="dk">Members</span><span class="dv">${t.members.join('<br>')}</span></div>
+    <div class="drow"><span class="dk">Track</span><span class="dv">${t.track}</span></div>
+    <div class="drow"><span class="dk">Round 1</span><span class="dv">${t.round1}</span></div>
+    ${t.github?`<div class="drow"><span class="dk">GitHub</span><span class="dv"><a href="${t.github}" target="_blank">${t.github}</a></span></div>`:''}
+    ${t.deployed?`<div class="drow"><span class="dk">Deployed</span><span class="dv"><a href="${t.deployed}" target="_blank">${t.deployed}</a></span></div>`:''}
+    ${t.description?`<div class="drow"><span class="dk">Description</span><span class="dv" style="text-align:left">${t.description}</span></div>`:''}`;
+  if (t.aiTotal!==null) {
+    html+=`<div class="ai-panel"><div class="ai-hdr">⚡ AI Score: ${t.aiTotal}/100 · ${t.aiTechStack||''} · README: ${t.aiReadmeQuality||''}</div>
+      ${(ch?.criteria||[]).map(c=>{const v=t.aiScores?.[c.name]??0;return`<div class="crit"><span style="color:var(--muted)">${c.name}</span><span style="font-family:var(--mono);color:${sc(Math.round(v/c.max*100))}">${v}/${c.max}</span></div>`;}).join('')}
+      ${t.aiSummary?`<div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.6">${t.aiSummary}</div>`:''}
+      ${t.aiStrength?`<div style="margin-top:6px;font-size:11px"><span style="color:#6ee7b7">✓</span> ${t.aiStrength}</div>`:''}
+      ${t.aiWeakness?`<div style="font-size:11px"><span style="color:#fca5a5">△</span> ${t.aiWeakness}</div>`:''}
+    </div>`;
+  }
+  if (t.manualEval) {
+    html+=`<div style="margin-top:10px;padding:12px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.18);border-radius:8px">
+      <div style="font-size:10px;font-weight:600;color:#6ee7b7;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Manual Score: ${t.manualEval.total}/100</div>
+      ${(ch?.criteria||[]).map(c=>{const v=t.manualEval.scores?.[c.name]??0;return`<div class="crit"><span style="color:var(--muted)">${c.name}</span><span style="font-family:var(--mono);color:${sc(Math.round(v/c.max*100))}">${v}/${c.max}</span></div>`;}).join('')}
+      ${t.manualEval.notes?`<div style="margin-top:8px;font-size:11px;color:var(--muted)">${t.manualEval.notes}</div>`:''}
+    </div>`;
+  }
+  document.getElementById('md-body').innerHTML=html;
+  openM('m-detail');
+}
+
+// ── Eval modal ────────────────────────────────────────────────
+function openEval(id) {
+  const t = allTeams.find(x=>x.id===id); if(!t) return;
+  evalTarget=id;
+  const ch=CH_MAP[t.challenge];
+  document.getElementById('me-title').textContent=t.teamName;
+  document.getElementById('me-sub').textContent=`${t.id} · ${ch?.name||''}`;
+  let aiHtml='';
+  if (t.aiTotal!==null) aiHtml=`<div class="ai-panel" style="margin-bottom:12px"><div class="ai-hdr">⚡ AI Reference: ${t.aiTotal}/100</div>${(ch?.criteria||[]).map(c=>{const v=t.aiScores?.[c.name]??0;return`<div class="crit"><span style="color:var(--muted)">${c.name}</span><span style="font-family:var(--mono)">${v}/${c.max}</span></div>`;}).join('')}</div>`;
+  document.getElementById('me-ai').innerHTML=aiHtml;
+  const ex=t.manualEval?.scores||t.aiScores||{};
+  let slHtml='<div style="margin-bottom:12px">';
+  (ch?.criteria||[]).forEach((c,i)=>{
+    const cur=ex[c.name]??0;
+    slHtml+=`<div class="slrow"><div class="slhdr"><span class="slname">${c.name}</span><div style="display:flex;align-items:center;gap:7px"><span class="slmax">/${c.max}</span><span class="slval" id="sv${i}">${cur}</span></div></div><input type="range" min="0" max="${c.max}" value="${cur}" step="1" oninput="onSl(${i},this.value)"></div>`;
+  });
+  slHtml+='</div>';
+  document.getElementById('me-sliders').innerHTML=slHtml;
+  document.getElementById('me-notes').value=t.manualEval?.notes||'';
+  updTotal();
+  closeM('m-detail');
+  openM('m-eval');
+}
+
+function onSl(i,val){document.getElementById('sv'+i).textContent=val;updTotal();}
+function updTotal(){
+  const t=allTeams.find(x=>x.id===evalTarget); if(!t) return;
+  const ch=CH_MAP[t.challenge];
+  let tot=0;
+  (ch?.criteria||[]).forEach((_,i)=>{tot+=parseInt(document.getElementById('sv'+i)?.textContent||0);});
+  const el=document.getElementById('me-total');
+  el.textContent=tot; el.style.color=sc(tot);
+}
+async function saveEval(){
+  const t=allTeams.find(x=>x.id===evalTarget); if(!t) return;
+  const ch=CH_MAP[t.challenge];
+  const scores={};let total=0;
+  (ch?.criteria||[]).forEach((c,i)=>{const v=parseInt(document.getElementById('sv'+i)?.textContent||0);scores[c.name]=v;total+=v;});
+  const notes=document.getElementById('me-notes').value;
+  await fetch('/api/eval',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({teamId:evalTarget,volId:'admin',scores,total,notes})});
+  closeM('m-eval'); toast(`✓ ${t.teamName} scored ${total}/100`); await refreshAll();
+}
+
+async function reeval(id) {
+  await fetch(`/api/teams/${id}/reeval`,{method:'POST'});
+  closeM('m-detail'); toast('Re-evaluation started…'); await refreshAll();
+}
+
+// ── Helpers ───────────────────────────────────────────────────
+function sc(v){return v>=70?'#10b981':v>=50?'#d4a017':'#ef4444';}
+function srC(v){return v>=70?'sr-hi':v>=50?'sr-md':'sr-lo';}
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+</script>
+</body>
+</html>

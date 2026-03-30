@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Round 2 Submission — INNOVATHON 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;700;800&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--fire:#e85d2f;--ink:#08080f;--paper:#f5f3ee;--card:#fff;--border:#e0dbd3;--muted:#9b9589;--text:#1a1814;--green:#059669;--mono:'DM Mono',monospace;--display:'Syne',sans-serif;--body:'Instrument Sans',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--text);font-family:var(--body);min-height:100vh}
+.hdr{background:var(--ink);padding:15px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-family:var(--display);font-size:18px;font-weight:800;color:#f5f3ee;text-decoration:none}
+.brand span{color:var(--fire)}
+.back{font-family:var(--mono);font-size:11px;color:rgba(245,243,238,.4);text-decoration:none}
+.back:hover{color:#f5f3ee}
+.hero{background:linear-gradient(135deg,var(--ink),#150a05);padding:40px 22px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'ROUND 2';position:absolute;font-family:var(--display);font-size:130px;font-weight:800;color:rgba(255,255,255,.018);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap}
+.hero h2{font-family:var(--display);font-size:clamp(24px,5vw,40px);font-weight:800;color:#f5f3ee;letter-spacing:-1px;position:relative;margin-bottom:10px}
+.hero p{font-family:var(--mono);font-size:12px;color:rgba(245,243,238,.4);position:relative;max-width:460px;margin:0 auto}
+.body{max-width:620px;margin:0 auto;padding:28px 18px 70px}
+
+/* lookup */
+.lookup-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:18px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.lookup-title{font-family:var(--display);font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.step-n{width:22px;height:22px;background:var(--fire);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;flex-shrink:0}
+
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+label{display:block;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+input,textarea{width:100%;background:var(--paper);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--body);font-size:13px;padding:10px 13px;outline:none;transition:border-color .18s,box-shadow .18s}
+input:focus,textarea:focus{border-color:var(--fire);box-shadow:0 0 0 3px rgba(232,93,47,.1)}
+textarea{min-height:80px;resize:vertical}
+
+/* team info box */
+.team-info{background:linear-gradient(135deg,rgba(232,93,47,.06),rgba(232,93,47,.02));border:1px solid rgba(232,93,47,.2);border-radius:12px;padding:16px;margin-bottom:16px}
+.ti-name{font-family:var(--display);font-size:18px;font-weight:700;margin-bottom:4px}
+.ti-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
+.ti-badge{background:rgba(232,93,47,.1);border:1px solid rgba(232,93,47,.2);border-radius:6px;padding:2px 8px;font-size:11px;color:var(--fire);font-weight:600;font-family:var(--mono)}
+
+.submit-btn{width:100%;padding:14px;background:var(--fire);color:#fff;border:none;border-radius:10px;font-family:var(--display);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.submit-btn:hover:not(:disabled){background:#c94d22;transform:translateY(-1px);box-shadow:0 4px 18px rgba(232,93,47,.3)}
+.submit-btn:disabled{background:var(--muted);cursor:not-allowed;transform:none;box-shadow:none}
+.lookup-btn{padding:10px 16px;background:var(--ink);color:#f5f3ee;border:none;border-radius:8px;font-family:var(--display);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.lookup-btn:hover{background:#1a1a2e}
+
+.err{background:#fff0ee;border:1px solid #fca5a5;border-radius:8px;padding:10px 13px;font-size:12px;color:#c94d22;margin-bottom:12px;display:none;font-family:var(--mono)}
+.success{text-align:center;padding:50px 20px;display:none}
+.success .ck{font-size:56px;margin-bottom:16px}
+.success h3{font-family:var(--display);font-size:26px;font-weight:800;margin-bottom:8px}
+.success p{color:var(--muted);font-size:13px;max-width:360px;margin:0 auto;font-family:var(--mono)}
+
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.already-done{background:linear-gradient(135deg,rgba(5,150,105,.08),rgba(5,150,105,.03));border:1px solid rgba(5,150,105,.25);border-radius:12px;padding:20px;text-align:center}
+.already-done .icon{font-size:40px;margin-bottom:10px}
+.already-done h4{font-family:var(--display);font-size:18px;font-weight:700;color:#065f46;margin-bottom:6px}
+.already-done p{font-size:12px;color:var(--muted);font-family:var(--mono)}
+
+.hint{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <a class="brand" href="/">INNOVA<span>THON</span> 2026</a>
+  <a class="back" href="/">← Home</a>
+</div>
+
+<div class="hero">
+  <h2>Round 2 Submission</h2>
+  <p>Enter your Team ID to verify shortlisting, then submit your GitHub repo & deployed link</p>
+</div>
+
+<div class="body">
+  <div class="err" id="err"></div>
+
+  <!-- Step 1: Lookup -->
+  <div class="lookup-card" id="step1">
+    <div class="lookup-title"><div class="step-n">1</div> Verify Your Team</div>
+    <div class="field">
+      <label>Your Team ID *</label>
+      <input id="tid-inp" placeholder="e.g. T001 or T042" maxlength="10" onkeydown="if(event.key==='Enter')lookupTeam()">
+      <div class="hint">Team ID was provided during registration (check your email or ask organizers)</div>
+    </div>
+    <button class="lookup-btn" onclick="lookupTeam()">Verify Team ID →</button>
+  </div>
+
+  <!-- Step 2: Submit (shown after lookup) -->
+  <div id="step2" style="display:none">
+    <div class="team-info" id="team-info-box"></div>
+    <div id="already-submitted-box" style="display:none"></div>
+    <div id="submit-form">
+      <div class="lookup-card">
+        <div class="lookup-title"><div class="step-n">2</div> Submit Project Links</div>
+        <div class="field"><label>GitHub Repository URL *</label><input id="f-github" type="url" placeholder="https://github.com/username/repo-name"></div>
+        <div class="field"><label>Deployed / Live Link</label><input id="f-deployed" type="url" placeholder="https://your-app.vercel.app"></div>
+        <div class="field"><label>Brief Description — what you built, key features, tech stack</label><textarea id="f-desc" placeholder="Describe your project in 2–3 sentences…"></textarea></div>
+      </div>
+      <button class="submit-btn" id="sub-btn" onclick="doSubmit()">
+        <span>🚀</span><span id="sub-txt">Submit for AI Evaluation</span>
+      </button>
+      <div style="text-align:center;margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--muted)">
+        Claude AI will analyze your GitHub repo & score against the challenge rubric
+      </div>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="success" id="success">
+    <div class="ck">🎉</div>
+    <h3>Submitted!</h3>
+    <p>Claude AI is analyzing your GitHub repo right now.<br>Scores will appear on your volunteer's dashboard in ~20 seconds.</p>
+    <p style="margin-top:12px;color:var(--fire);font-family:var(--mono);font-size:12px">Good luck!</p>
+  </div>
+</div>
+
+<script>
+let foundTeam = null;
+
+function showErr(msg){const e=document.getElementById('err');e.textContent=msg;e.style.display='block';e.scrollIntoView({behavior:'smooth',block:'center'});}
+function hideErr(){document.getElementById('err').style.display='none';}
+
+async function lookupTeam(){
+  hideErr();
+  const tid = document.getElementById('tid-inp').value.trim().toUpperCase();
+  if (!tid){showErr('Please enter your Team ID.');return;}
+  try{
+    const r=await fetch(`/api/teams/${tid}`);
+    if (!r.ok){showErr('Team ID not found. Please check and try again.');return;}
+    const t=await r.json();
+    foundTeam=t;
+    renderTeamInfo(t);
+  }catch(e){showErr('Connection error. Is the server running?');}
+}
+
+function renderTeamInfo(t){
+  const trackShort = t.track.split('&')[0].trim();
+  document.getElementById('team-info-box').innerHTML=`
+    <div class="ti-name">${t.teamName}</div>
+    <div class="ti-row"><span class="ti-badge">${t.id}</span><span>${t.campus}</span></div>
+    <div class="ti-row" style="margin-top:6px">👥 ${t.members.join(' · ')}</div>
+    <div class="ti-row" style="margin-top:4px">🎯 ${t.track}</div>
+  `;
+  document.getElementById('step1').style.display='none';
+  document.getElementById('step2').style.display='block';
+
+  if(t.round1 !== 'shortlisted'){
+    document.getElementById('submit-form').style.display='none';
+    document.getElementById('already-submitted-box').style.display='block';
+    document.getElementById('already-submitted-box').innerHTML=`
+      <div class="already-done" style="background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.25)">
+        <div class="icon">😔</div>
+        <h4 style="color:#991b1b">Not Shortlisted</h4>
+        <p>Your team was not shortlisted for Round 2. Contact the organizers if you think this is an error.</p>
+      </div>`;
+    return;
+  }
+
+  if(t.submittedAt){
+    document.getElementById('submit-form').style.display='none';
+    document.getElementById('already-submitted-box').style.display='block';
+    document.getElementById('already-submitted-box').innerHTML=`
+      <div class="already-done">
+        <div class="icon">✅</div>
+        <h4>Already Submitted!</h4>
+        <p>Your project was submitted on ${new Date(t.submittedAt).toLocaleString('en-IN')}.<br>AI evaluation is ${t.aiStatus==='done'?'complete — score: '+t.aiTotal+'/100':'in progress…'}</p>
+      </div>`;
+    return;
+  }
+}
+
+async function doSubmit(){
+  hideErr();
+  if(!foundTeam){showErr('Please verify your team first.');return;}
+  const github  =document.getElementById('f-github').value.trim();
+  const deployed=document.getElementById('f-deployed').value.trim();
+  const desc    =document.getElementById('f-desc').value.trim();
+  if(!github){showErr('GitHub URL is required.');return;}
+  if(!github.startsWith('http')){showErr('Enter a valid URL starting with https://');return;}
+
+  const btn=document.getElementById('sub-btn');
+  const txt=document.getElementById('sub-txt');
+  btn.disabled=true;
+  txt.innerHTML='<span class="spin"></span> Submitting…';
+
+  try{
+    const r=await fetch(`/api/teams/${foundTeam.id}/submit`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({github,deployed,description:desc}),
+    });
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||'Submission failed');
+    document.getElementById('step2').style.display='none';
+    document.getElementById('success').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){
+    showErr(e.message);
+    btn.disabled=false;
+    txt.textContent='Submit for AI Evaluation';
+  }
+}
+</script>
+</body>
+</html>

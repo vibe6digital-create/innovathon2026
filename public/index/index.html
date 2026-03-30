@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INNOVATHON 2026 — NMIMS Indore</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#08080f;font-family:'Syne',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.bg{position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 20% 20%,rgba(232,93,47,.12),transparent 60%),radial-gradient(ellipse 50% 60% at 80% 80%,rgba(13,148,136,.10),transparent 60%)}
+.grid{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px}
+.wrap{position:relative;z-index:1;text-align:center;padding:24px 20px;width:100%;max-width:800px}
+.eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;color:#e85d2f;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:10px}
+.eyebrow::before,.eyebrow::after{content:'';width:40px;height:1px;background:#e85d2f;opacity:.4}
+h1{font-size:clamp(48px,10vw,100px);font-weight:800;color:#f5f3ee;line-height:.92;letter-spacing:-3px;margin-bottom:14px}
+h1 span{color:#e85d2f}
+.sub{font-family:'DM Mono',monospace;font-size:12px;color:rgba(245,243,238,.3);margin-bottom:52px;letter-spacing:.5px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:680px;margin:0 auto}
+@media(max-width:600px){.cards{grid-template-columns:1fr}}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:24px 20px;cursor:pointer;transition:all .22s;text-align:left;text-decoration:none;display:block;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;border-radius:14px;opacity:0;transition:opacity .22s}
+.card.team::before{background:linear-gradient(135deg,rgba(232,93,47,.1),transparent)}
+.card.vol::before{background:linear-gradient(135deg,rgba(13,148,136,.1),transparent)}
+.card.admin::before{background:linear-gradient(135deg,rgba(212,160,23,.1),transparent)}
+.card:hover{border-color:rgba(255,255,255,.2);transform:translateY(-3px)}
+.card:hover::before{opacity:1}
+.icon{font-size:28px;margin-bottom:12px}
+.card-name{font-size:17px;font-weight:700;color:#f5f3ee;margin-bottom:5px;letter-spacing:-.3px}
+.card-desc{font-size:11px;color:rgba(245,243,238,.35);line-height:1.5;font-family:'DM Mono',monospace}
+.arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:18px;color:rgba(255,255,255,.12);transition:all .2s}
+.card:hover .arrow{right:12px;color:rgba(255,255,255,.5)}
+.footer{margin-top:40px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(245,243,238,.15)}
+.round-badge{display:inline-block;background:rgba(232,93,47,.18);border:1px solid rgba(232,93,47,.3);border-radius:4px;padding:2px 6px;font-family:'DM Mono',monospace;font-size:9px;color:#f4a07a;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grid"></div>
+<div class="wrap">
+  <div class="eyebrow">NMIMS Indore · 24-Hour Hackathon</div>
+  <h1>INNOVA<span>THON</span><br>2026</h1>
+  <div class="sub">77 Teams · 5 Challenges · 2 Rounds</div>
+  <div class="cards">
+    <a class="card team" href="/team">
+      <div class="round-badge">ROUND 2</div>
+      <div class="icon">🚀</div>
+      <div class="card-name">Team Submission</div>
+      <div class="card-desc">Shortlisted teams submit GitHub repo & deployed link for AI evaluation</div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="card vol" href="/volunteer">
+      <div class="round-badge">ROUND 2</div>
+      <div class="icon">⚡</div>
+      <div class="card-name">Volunteer Portal</div>
+      <div class="card-desc">View assigned teams, AI scores, add manual evaluations</div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="card admin" href="/admin">
+      <div class="round-badge">ADMIN</div>
+      <div class="icon">🎯</div>
+      <div class="card-name">Admin Panel</div>
+      <div class="card-desc">Round 1 shortlisting, team management, full leaderboard</div>
+      <div class="arrow">→</div>
+    </a>
+  </div>
+  <div class="footer">Powered by Claude AI (Anthropic) · Vibe6 × NMIMS Indore</div>
+</div>
+</body>
+</html>
